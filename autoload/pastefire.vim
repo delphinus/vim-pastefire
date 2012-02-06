@@ -1,10 +1,4 @@
-function! pastefire#range() range
-    let lines = getline(a:firstline, a:lastline)
-    let str = join(lines, "\n")
-    call pastefire#paste(str)
-endfunction
-
-function! pastefire#paste(str)
+function! pastefire#run(str, line1, line2)
     if exists('$PF_EMAIL') && len($PF_EMAIL) > 0
         let email = $PF_EMAIL
     elseif exists('g:pastefire_email') && len(g:pastefire_email) > 0
@@ -23,12 +17,29 @@ function! pastefire#paste(str)
         return
     endif
 
-    let str = substitute(shellescape('clipboard=' . a:str), '\\\ze\n', '', 'g')
+    echo a:str
+    let ary = split(a:str)
+    echo ary
+    if get(ary, 0) ==# 'n'
+        let lines = [get(ary, 1)]
+    elseif get(ary, 0) ==# 'v'
+        let lines = getline(getpos("'<")[1], getpos("'>")[1])
+    elseif a:line1 > 0 && a:line2 > 0
+        let lines = getline(a:firstline, a:lastline)
+    else
+        let lines = [a:str]
+    endif
+
+    let lines[0] = 'clipboard=' . lines[0]
+    let tmp = tempname()
+    call writefile(lines, tmp, 'b')
+
+    let fn = shellescape('@' . tmp)
     let email = shellescape('email=' . email)
     let password = shellescape('pwd=' . password)
     let url = 'https://pastefire.com/set.php'
-    let com = printf('curl --data-urlencode %s -d %s -d %s %s',
-                \ str, email, password, url)
+    let com = printf('curl -k --data-binary %s -d %s -d %s %s',
+                \ fn, email, password, url)
     echo 'sending...'
     let res = system(com)
     echo 'successful!'
