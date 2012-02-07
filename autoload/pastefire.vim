@@ -17,17 +17,36 @@ function! pastefire#run(str, line1, line2)
         return
     endif
 
-    echo a:str
     let ary = split(a:str)
-    echo ary
     if get(ary, 0) ==# 'n'
         let lines = [get(ary, 1)]
     elseif get(ary, 0) ==# 'v'
-        let lines = getline(getpos("'<")[1], getpos("'>")[1])
-    elseif a:line1 > 0 && a:line2 > 0
-        let lines = getline(a:firstline, a:lastline)
-    else
-        let lines = [a:str]
+        let save_cursor = getpos('.')
+        let start_line = getpos("'<")
+        let end_line = getpos("'>")
+        call setpos('.', [0, end_line[1], 1, 0])
+        echo start_line
+        echo end_line
+        if start_line[1] == end_line[1]
+            let src = getline(start_line[1])
+            let start = start_line[2] - 1
+            let len = end_line[2] - start_line[2] + 1
+            let lines = [strpart(src, start, len)]
+        elseif end_line[2] > col('$')
+            let lines = getline(getpos("'<")[1], getpos("'>")[1])
+        else
+            let lines = []
+            for line in range(start_line[1], end_line[1])
+                if line == start_line[1]
+                    let lines += [strpart(getline(line), start_line[2] - 1)]
+                elseif line == end_line[1]
+                    let lines += [strpart(getline(line), 0, end_line[2])]
+                else
+                    let lines += [getline(line)]
+                endif
+            endfor
+        endif
+        call setpos('.', save_cursor)
     endif
 
     let lines[0] = 'clipboard=' . lines[0]
