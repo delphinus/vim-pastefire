@@ -1,3 +1,11 @@
+" Vim glbal plugin for Pastefire (http://pastefire.com/)
+" Last Change: 2012 Feb 09
+" Maintainer: delphinus <delphinus@remora.cx>
+" License: This file is placed in th public domain.
+
+let s:save_cpo = &cpo
+set cpo&vim
+
 function! pastefire#run(str, line1, line2)
     if exists('$PF_EMAIL') && len($PF_EMAIL) > 0
         let email = $PF_EMAIL
@@ -25,8 +33,6 @@ function! pastefire#run(str, line1, line2)
         let start_line = getpos("'<")
         let end_line = getpos("'>")
         call setpos('.', [0, end_line[1], 1, 0])
-        echo start_line
-        echo end_line
         if start_line[1] == end_line[1]
             let src = getline(start_line[1])
             let start = start_line[2] - 1
@@ -62,4 +68,7 @@ function! pastefire#run(str, line1, line2)
     echo 'sending...'
     let res = system(com)
     echo 'successful!'
+    call delete(tmp)
 endfunction
+
+let &cpo = s:save_cpo
