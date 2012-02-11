@@ -1,22 +1,22 @@
 *pastefire.txt* Plugin for Pastefire (http://pastefire.com/)
 
 This plugin helps you to use Pastefire in vim.  Please read the site
-http://pastefire.com/ for this service.
+http://pastefire.com/ about this service.
 
 In vim, you choose words / sentenses with visual mode, and type <Leader>pf
 (default mapping), then vim sends the selection to Pastefire.  You can get
 words / sentenses with iPhone.
 
 Mapping:
-<Leader>pf
-    Send words / sentenses to Pastefire.
+    <Leader>pf
+        Send words / sentenses to Pastefire.
 
-<Plug>(pastefire)
-    ditto
+    <Plug>(pastefire)
+        ditto
 
 Commands:
-:Pastefire
-    ditto
+    :Pastefire
+        ditto
 
                                                     *pastefire-settings*
                                                     *pastefire_email*
@@ -26,12 +26,12 @@ must be same with ones you input in Pastefire iPhone App.
 
 There are two methods.
 
-* with environmental variables
+* with environmental variables >
     $ export PASTEFIRE_EMAIL=user@example.com
     $ export PASTEFIRE_PASSWORD=abcde12345
-
-* with vim global variables
+<
+* with vim global variables >
     :let g:pastefire_email='user@example.com
     :let g:pastefire_password='abcde12345'
-
+<
 vim:tw=78:ts=8:ft=help:norl:nolist:

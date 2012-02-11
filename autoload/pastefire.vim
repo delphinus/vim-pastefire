@@ -7,21 +7,21 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 function! pastefire#run(str, line1, line2)
-    if exists('$PF_EMAIL') && len($PF_EMAIL) > 0
+    if exists('$PASTEFIRE_EMAIL') && len($PASTEFIRE_EMAIL) > 0
         let email = $PF_EMAIL
     elseif exists('g:pastefire_email') && len(g:pastefire_email) > 0
         let email = g:pastefire_email
     else
-        echomsg 'please specify $PF_EMAIL or g:pastefire_email'
+        echomsg 'please specify $PASTEFIRE_EMAIL or g:pastefire_email'
         return
     endif
 
-    if exists('$PF_PASSWORD') && len($PF_PASSWORD) > 0
+    if exists('$PASTEFIRE_PASSWORD') && len($PASTEFIRE_PASSWORD) > 0
         let password = $PF_PASSWORD
     elseif exists('g:pastefire_password') && len(g:pastefire_password) > 0
         let password = g:pastefire_password
     else
-        echomsg 'please specify $PF_PASSWORD or g:pastefire_password'
+        echomsg 'please specify $PASTEFIRE_PASSWORD or g:pastefire_password'
         return
     endif
 
