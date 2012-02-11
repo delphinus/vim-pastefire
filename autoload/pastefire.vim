@@ -26,22 +26,31 @@ function! pastefire#run(str, line1, line2)
     endif
 
     let ary = split(a:str)
+    let lines = []
+    " in normal mode, this gets a line on cursor.
     if get(ary, 0) ==# 'n'
-        let lines = [get(ary, 1)]
+        let lines = [getline('.')]
+
+    " in visual mode, this gets lines on selection.
     elseif get(ary, 0) ==# 'v'
-        let save_cursor = getpos('.')
         let start_line = getpos("'<")
         let end_line = getpos("'>")
+        let save_cursor = getpos('.')
         call setpos('.', [0, end_line[1], 1, 0])
+
+        " if you select strings in a line,
         if start_line[1] == end_line[1]
             let src = getline(start_line[1])
             let start = start_line[2] - 1
             let len = end_line[2] - start_line[2] + 1
             let lines = [strpart(src, start, len)]
+
+        " if you select in 'V' mode
         elseif end_line[2] > col('$')
             let lines = getline(getpos("'<")[1], getpos("'>")[1])
+
+        " if start position and end position are both in the middle of line,
         else
-            let lines = []
             for line in range(start_line[1], end_line[1])
                 if line == start_line[1]
                     let lines += [strpart(getline(line), start_line[2] - 1)]
@@ -52,22 +61,29 @@ function! pastefire#run(str, line1, line2)
                 endif
             endfor
         endif
+
         call setpos('.', save_cursor)
     endif
 
+    " save lines to temporary file
     let lines[0] = 'clipboard=' . lines[0]
     let tmp = tempname()
     call writefile(lines, tmp, 'b')
 
+    " make command
     let fn = shellescape('@' . tmp)
     let email = shellescape('email=' . email)
     let password = shellescape('pwd=' . password)
     let url = 'https://pastefire.com/set.php'
     let com = printf('curl -k --data-binary %s -d %s -d %s %s',
                 \ fn, email, password, url)
-    echo 'sending...'
+
+    " do paste
+    echon 'sending...'
     let res = system(com)
     echo 'successful!'
+
+    " delete temporary file
     call delete(tmp)
 endfunction
 
