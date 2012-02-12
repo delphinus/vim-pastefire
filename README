@@ -31,7 +31,7 @@ There are two methods.
     $ export PASTEFIRE_PASSWORD=abcde12345
 <
 * with vim global variables >
-    :let g:pastefire_email='user@example.com
+    :let g:pastefire_email='user@example.com'
     :let g:pastefire_password='abcde12345'
 <
 vim:tw=78:ts=8:ft=help:norl:nolist:
