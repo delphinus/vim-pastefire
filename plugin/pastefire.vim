@@ -1,3 +1,8 @@
+" Vim global plugin for Pastefire (http://pastefire.com/)
+" Last Change: 2012 Feb 12
+" Maintainer: delphinus <delphinus@remora.cx>
+" License: This file is placed in th public domain.
+
 if exists('g:loaded_pastefire')
     finish
 endif

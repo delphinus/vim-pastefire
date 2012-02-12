@@ -1,5 +1,5 @@
-" Vim glbal plugin for Pastefire (http://pastefire.com/)
-" Last Change: 2012 Feb 09
+" Vim global plugin for Pastefire (http://pastefire.com/)
+" Last Change: 2012 Feb 12
 " Maintainer: delphinus <delphinus@remora.cx>
 " License: This file is placed in th public domain.
 
@@ -7,6 +7,7 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 function! pastefire#run(str, line1, line2)
+    " account setting
     if exists('$PASTEFIRE_EMAIL') && len($PASTEFIRE_EMAIL) > 0
         let email = $PF_EMAIL
     elseif exists('g:pastefire_email') && len(g:pastefire_email) > 0
@@ -16,6 +17,7 @@ function! pastefire#run(str, line1, line2)
         return
     endif
 
+    " password setting
     if exists('$PASTEFIRE_PASSWORD') && len($PASTEFIRE_PASSWORD) > 0
         let password = $PF_PASSWORD
     elseif exists('g:pastefire_password') && len(g:pastefire_password) > 0
@@ -52,7 +54,7 @@ function! pastefire#run(str, line1, line2)
         " if start position and end position are both in the middle of line,
         else
             for line in range(start_line[1], end_line[1])
-                if line == start_line[1]
+                if iine == start_line[1]
                     let lines += [strpart(getline(line), start_line[2] - 1)]
                 elseif line == end_line[1]
                     let lines += [strpart(getline(line), 0, end_line[2])]
@@ -66,16 +68,15 @@ function! pastefire#run(str, line1, line2)
     endif
 
     " save lines to temporary file
-    let lines[0] = 'clipboard=' . lines[0]
     let tmp = tempname()
     call writefile(lines, tmp, 'b')
 
     " make command
-    let fn = shellescape('@' . tmp)
+    let fn = shellescape('clipboard@' . tmp)
     let email = shellescape('email=' . email)
     let password = shellescape('pwd=' . password)
     let url = 'https://pastefire.com/set.php'
-    let com = printf('curl -k --data-binary %s -d %s -d %s %s',
+    let com = printf('curl -k --data-urlencode %s -d %s -d %s %s',
                 \ fn, email, password, url)
 
     " do paste
